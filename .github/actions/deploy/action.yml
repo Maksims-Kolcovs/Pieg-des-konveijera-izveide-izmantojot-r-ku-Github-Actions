@@ -42,4 +42,5 @@ runs:
       shell: powershell
       run: |
         $appPath = "$env:GITHUB_WORKSPACE\python-greetings"
-        pm2 start "$appPath\app.py" --name "greetings-app-${{ inputs.environment }}" --interpreter "$appPath\venv\Scripts\python.exe" -- --port ${{ inputs.port }}
+        $env:PORT = "${{ inputs.port }}"
+        pm2 start "$appPath\app.py" --name "greetings-app-${{ inputs.environment }}" --interpreter "$appPath\venv\Scripts\python.exe"
