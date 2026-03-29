@@ -21,22 +21,27 @@ runs:
         repository: mtararujs/python-greetings
         path: python-greetings
 
+    - name: Copy app to stable folder
+      shell: cmd
+      run: |
+        if not exist C:\greetings\${{ inputs.environment }} mkdir C:\greetings\${{ inputs.environment }}
+        xcopy /E /I /Y python-greetings C:\greetings\${{ inputs.environment }}
+
     - name: Create virtual environment
       shell: cmd
-      working-directory: python-greetings
+      working-directory: C:\greetings\${{ inputs.environment }}
       run: python -m venv venv
 
     - name: Install pip dependencies
       shell: cmd
-      working-directory: python-greetings
+      working-directory: C:\greetings\${{ inputs.environment }}
       run: venv\Scripts\python.exe -m pip install -r requirements.txt
 
     - name: Stop existing service if running
       shell: cmd
-      working-directory: python-greetings
       run: pm2 delete greetings-app-${{ inputs.environment }} & EXIT /B 0
 
     - name: Start service with pm2
       shell: cmd
-      working-directory: python-greetings
+      working-directory: C:\greetings\${{ inputs.environment }}
       run: pm2 start app.py --name greetings-app-${{ inputs.environment }} --interpreter "%CD%\venv\Scripts\python.exe" -- --port ${{ inputs.port }}
