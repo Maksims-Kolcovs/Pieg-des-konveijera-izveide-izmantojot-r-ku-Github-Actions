@@ -44,3 +44,10 @@ runs:
         $appPath = "$env:GITHUB_WORKSPACE\python-greetings"
         $env:PORT = "${{ inputs.port }}"
         pm2 start "$appPath\app.py" --name "greetings-app-${{ inputs.environment }}" --interpreter "$appPath\venv\Scripts\python.exe"
+
+    - name: Wait for service to start
+      shell: powershell
+      run: |
+        Start-Sleep -Seconds 5
+        Write-Host "Checking if service is running..."
+        pm2 list
